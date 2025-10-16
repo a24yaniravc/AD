@@ -1,0 +1,10 @@
+{
+    "nombre": "Juan Pedro",
+    "apellidos": "Gómez",
+    "edad": 30,
+    "ciudad": "Springfield",
+    "telefonos": [
+        "123-456-7890",
+        "098-765-4321"
+    ]
+}

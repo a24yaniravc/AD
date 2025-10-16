@@ -1,0 +1,33 @@
+[
+  {
+    "nombre": "Camiseta",
+    "precio": 19.99,
+    "disponible": true,
+    "categorias": [
+      "Ropa",
+      "Verano",
+      "Casual"
+    ],
+    "stock": 50,
+    "descripcion": "Camiseta de algodón",
+    "proveedor": {
+      "nombre": "Zara"
+    }
+  },
+  {
+    "nombre": "Pantalones",
+    "precio": 39.99,
+    "disponible": true,
+    "categorias": [
+      "Ropa",
+      "Invierno",
+      "Formal"
+    ],
+    "stock": 30,
+    "descripcion": "Pantalones de mezclilla",
+    "proveedor": {
+      "nombre": "Polinesia",
+      "telefono": "121231212"
+    }
+  }
+]

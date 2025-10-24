@@ -6,9 +6,12 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Principal {
+    // Cambiar datos según BD y usuario
     public static String DB_NAME = "biblioYaniraV";
     public static String DB_USER = "usuario";
     public static String DB_PASSWORD = "usuario123";
+
+    // Variables globales
     public static Boolean salir = false;
     public static Scanner sc = new Scanner(System.in);
 

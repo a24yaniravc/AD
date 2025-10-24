@@ -30,10 +30,11 @@ public class Principal {
                 new GestorBiblioteca(true).create(DB_NAME);
                 break;
             case "2":
-                System.out.println("Está seguro? Se eliminará toda la BD " + DB_NAME + ". Además, se cerrará la aplicación.");
+                System.out.println(
+                        "Está seguro? Se eliminará toda la BD " + DB_NAME + ". Además, se cerrará la aplicación.");
                 System.out.print("Elección (Si/No): ");
                 respuesta = sc.nextLine().toUpperCase();
-            
+
                 while (!respuesta.equals("SI") && !respuesta.equals("NO")) {
                     System.out.println("La opción es inválida. Vuelva a intentarlo.");
                     System.out.print("Elección (Si/No): ");
@@ -84,15 +85,28 @@ public class Principal {
         System.out.println("");
         System.out.println("=== Gestor de Libros ===");
         GestorLibros gestorLibros = new GestorLibros(conn);
-        System.out.println("Agregando libros de ejemplo...");
-        // Agregar libros
-        gestorLibros.addLibro("978-3-16-148410-0", "El Quijote", "Miguel de Cervantes", 1605);
-        gestorLibros.addLibro("978-0-14-044913-6", "Guerra y Paz", "León Tolstói", 1869);
-        gestorLibros.addLibro("978-0-452-28423-4", "1984", "George Orwell", 1949);
-        gestorLibros.addLibro("978-0-7432-7356-5", "El Código Da Vinci", "Dan Brown", 2003);
+        System.out.println("Desea agregar libros de ejemplo? (Si/No)");
+        System.out.print("Respuesta: ");
+        respuesta = sc.nextLine().toUpperCase();
+
+        while (!respuesta.equals("SI") && !respuesta.equals("NO")) {
+            System.out.println("La respuesta es incorrecta. Vuelva a intentarlo.");
+            System.out.print("Respuesta: ");
+            respuesta = sc.nextLine().toUpperCase();
+        }
+
+        if (respuesta.equals("NO")) {
+            System.out.println("No se agregarán libros de ejemplo.");
+        } else {
+            System.out.println("Agregando libros de ejemplo...");
+            // Agregar libros
+            gestorLibros.addLibro("978-3-16-148410-0", "El Quijote", "Miguel de Cervantes", 1605);
+            gestorLibros.addLibro("978-0-14-044913-6", "Guerra y Paz", "León Tolstói", 1869);
+            gestorLibros.addLibro("978-0-452-28423-4", "1984", "George Orwell", 1949);
+            gestorLibros.addLibro("978-0-7432-7356-5", "El Código Da Vinci", "Dan Brown", 2003);
+        }
 
         // Menú de operaciones
-
         while (salir != true) {
             System.out.println("");
             System.out.println("=== Menú de Operaciones ===");
@@ -165,6 +179,7 @@ public class Principal {
                         subOpcion = sc.nextInt();
                     }
 
+                    // Realizar la modificación según la subopción
                     switch (subOpcion) {
                         case 1:
                             gestorLibros.updateTitulo(isbnModificar, nuevoTitulo);
@@ -184,6 +199,7 @@ public class Principal {
                     gestorLibros.deleteLibro(isbnEliminar);
                     break;
                 case 7:
+                    // Eliminar todos los libros
                     System.out.println("Estás seguro? Se eliminarán todos los libros de la base de datos.");
                     System.out.print("(Si/No): ");
 
@@ -203,11 +219,13 @@ public class Principal {
                     }
                     break;
                 case 8:
+                    // Gestor de Base de Datos
                     System.out.println("Accediendo al Gestor de Base de Datos");
                     System.out.println("");
                     gestorVisualBD();
                     break;
                 case 9:
+                    // Salir
                     System.out.println("Saliendo de la aplicación..");
                     System.out.println("Adios :)");
                     salir = true;

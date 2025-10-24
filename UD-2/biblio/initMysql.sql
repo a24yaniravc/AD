@@ -4,11 +4,6 @@
 -- Script de inicialización para MySQL
 -- =========================================
 
--- Crear a base de datos de prácticas
-CREATE DATABASE IF NOT EXISTS testdb
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_general_ci;
-
 -- Crear usuario de acceso remoto
 CREATE USER IF NOT EXISTS 'usuario'@'%' IDENTIFIED BY 'usuario123';
 

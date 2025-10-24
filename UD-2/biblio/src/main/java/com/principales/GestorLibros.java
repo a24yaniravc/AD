@@ -1,10 +1,10 @@
 package com.principales;
 
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class GestorLibros {
     private Connection conn;
@@ -30,9 +30,9 @@ public class GestorLibros {
     // Métodos para gestionar libros
 
     // Crear un nuevo libro
-    public void addLibro(String isbn, String titulo, String autor, int anioPublicacion){
+    public void addLibro(String isbn, String titulo, String autor, int anioPublicacion) {
         String sqlInsert = "INSERT INTO libros (ISBN, titulo, autor, anio_publicacion) VALUES (?, ?, ?, ?)";
-        
+
         try (var pstmt = conn.prepareStatement(sqlInsert)) {
             pstmt.setString(1, isbn);
             pstmt.setString(2, titulo);
@@ -49,14 +49,14 @@ public class GestorLibros {
     // Obtener todos los libros
     public void getLibros() {
         String sqlSelect = "SELECT * FROM libros";
-        
-        try (var statement = conn.createStatement();
-             var rs = statement.executeQuery(sqlSelect)) {
+
+        try (Statement statement = conn.createStatement();
+                ResultSet rs = statement.executeQuery(sqlSelect)) {
             while (rs.next()) {
                 System.out.println("ISBN: " + rs.getString("ISBN") +
-                                   ", Titulo: " + rs.getString("titulo") +
-                                   ", Autor: " + rs.getString("autor") +
-                                   ", Año de Publicación: " + rs.getInt("anio_publicacion"));
+                        ", Titulo: " + rs.getString("titulo") +
+                        ", Autor: " + rs.getString("autor") +
+                        ", Año de Publicación: " + rs.getInt("anio_publicacion"));
             }
         } catch (SQLException e) {
             System.err.println("ERROR obteniendo libros: " + e.getMessage());
@@ -71,9 +71,9 @@ public class GestorLibros {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     System.out.println("ISBN: " + rs.getString("ISBN") +
-                                       ", Titulo: " + rs.getString("titulo") +
-                                       ", Autor: " + rs.getString("autor") +
-                                       ", Año de Publicación: " + rs.getInt("anio_publicacion"));
+                            ", Titulo: " + rs.getString("titulo") +
+                            ", Autor: " + rs.getString("autor") +
+                            ", Año de Publicación: " + rs.getInt("anio_publicacion"));
                 }
             }
         } catch (SQLException e) {
@@ -89,9 +89,9 @@ public class GestorLibros {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     System.out.println("ISBN: " + rs.getString("ISBN") +
-                                        ", Titulo: " + rs.getString("titulo") +
-                                        ", Autor: " + rs.getString("autor") +
-                                        ", Año de Publicación: " + rs.getInt("anio_publicacion"));
+                            ", Titulo: " + rs.getString("titulo") +
+                            ", Autor: " + rs.getString("autor") +
+                            ", Año de Publicación: " + rs.getInt("anio_publicacion"));
                 }
             }
         } catch (SQLException e) {
@@ -182,7 +182,7 @@ public class GestorLibros {
     }
 
     // CleanLibros
-    public void cleanLibros(){
+    public void cleanLibros() {
         String sqlDeleteAll = "DELETE FROM libros";
         try (Statement statement = conn.createStatement()) {
             int rowsAffected = statement.executeUpdate(sqlDeleteAll);
@@ -190,5 +190,20 @@ public class GestorLibros {
         } catch (SQLException e) {
             System.err.println("ERROR limpiando libros: " + e.getMessage());
         }
-    } 
+    }
+
+    // Alterar la estructura de libros
+    /*public void alterLibros(String nombreColumna, String tipo) {
+        String sqlAlterLibros = "ALTER TABLE libros ADD COLUMN " + nombreColumna + " " + tipo;
+
+        try (Statement statement = conn.createStatement()) {
+            statement.executeUpdate(sqlAlterLibros);
+            System.out.println("Añadida la columna '" + nombreColumna + "' de tipo " + tipo + " a libros.");
+        } catch (SQLException e) {
+            System.out.println("ERROR alterando libors: " + e.getMessage());
+        }
+
+    }*/
+
+    //
 }

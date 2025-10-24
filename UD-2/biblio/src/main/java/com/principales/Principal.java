@@ -9,13 +9,54 @@ public class Principal {
     public static String DB_NAME = "biblioYaniraV";
     public static String DB_USER = "usuario";
     public static String DB_PASSWORD = "usuario123";
+    public static Boolean salir = false;
+    public static Scanner sc = new Scanner(System.in);
+
+    public static void gestorVisualBD() {
+        System.out.println("Opciones:");
+        System.out.println("1. Reemplazar BD con la original");
+        System.out.println("2. Eliminar BD actual");
+        System.out.print("Respuesta: ");
+        String respuesta = sc.nextLine();
+
+        while (!respuesta.equals("1") && !respuesta.equals("2")) {
+            System.out.println("La opción introducida es incorrecta. Vuelva a intentarlo.");
+            System.out.print("Respuesta: ");
+            respuesta = sc.nextLine();
+        }
+
+        switch (respuesta) {
+            case "1":
+                new GestorBiblioteca(true).create(DB_NAME);
+                break;
+            case "2":
+                System.out.println("Está seguro? Se eliminará toda la BD " + DB_NAME + ". Además, se cerrará la aplicación.");
+                System.out.print("Elección (Si/No): ");
+                respuesta = sc.nextLine().toUpperCase();
+            
+                while (!respuesta.equals("SI") && !respuesta.equals("NO")) {
+                    System.out.println("La opción es inválida. Vuelva a intentarlo.");
+                    System.out.print("Elección (Si/No): ");
+                    respuesta = sc.nextLine().toUpperCase();
+                }
+
+                if (respuesta.equals("SI")) {
+                    System.out.println("Eliminando base de datos...");
+                    new GestorBiblioteca(true).destroy(DB_NAME);
+                    salir = true;
+                } else {
+                    System.out.println("Se ha cancelado el proceso de borrado.");
+                    break;
+                }
+            default:
+                break;
+        }
+    }
 
     public static void main(String[] args) throws SQLException {
-        Scanner sc = new Scanner(System.in);
-
         System.out.println("==== Gestor de BD ====");
         System.out.println("Creando base de datos...");
-        System.out.println("Si existe, desea borrar la BD anterior? (true/false)");
+        System.out.println("Si existe, desea reemplazar la BD anterior? (true/false)");
         System.out.print("Respuesta: ");
         String respuesta = sc.nextLine();
 
@@ -49,95 +90,132 @@ public class Principal {
         gestorLibros.addLibro("978-0-14-044913-6", "Guerra y Paz", "León Tolstói", 1869);
         gestorLibros.addLibro("978-0-452-28423-4", "1984", "George Orwell", 1949);
         gestorLibros.addLibro("978-0-7432-7356-5", "El Código Da Vinci", "Dan Brown", 2003);
-        System.out.println("");
 
-        // Consultas
-        // Consultar todos los libros
-        System.out.println("Lista de todos los libros:");
-        gestorLibros.getLibros();
-        System.out.println("");
+        // Menú de operaciones
 
-        // Consultar libros por autor
-        String autorConsulta = "George Orwell";
-        System.out.println("Libros del autor " + autorConsulta + ":");
-        gestorLibros.getLibrosByAutor(autorConsulta);
-        System.out.println("");
+        while (salir != true) {
+            System.out.println("");
+            System.out.println("=== Menú de Operaciones ===");
+            System.out.println("1. Agregar libro");
+            System.out.println("2. Consultar todos los libros");
+            System.out.println("3. Consultar libros por autor");
+            System.out.println("4. Consultar libros por año");
+            System.out.println("5. Modificar libro");
+            System.out.println("6. Eliminar libro");
+            System.out.println("7. Eliminar todos los libros");
+            System.out.println("8. Gestor de Base de Datos");
+            System.out.println("9. Salir");
+            System.out.print("Seleccione una opción: ");
+            int opcion = sc.nextInt();
+            sc.nextLine(); // Limpiar el buffer
 
-        // Consultar libros posteriores a año específico de publicación
-        int anioConsulta = 1940;
-        System.out.println("Libros publicados después del año " + anioConsulta + ":");
-        gestorLibros.getLibrosByAnio(anioConsulta);
-        System.out.println("");
+            System.out.println("");
 
-        // Modificaciones
-        // Modificar titulo libro
-        String isbnModificar = "978-0-452-28423-4";
-        String nuevoTitulo = "Mil novecientos ochenta y cuatro";
-        System.out.println("Modificando titulo del libro con ISBN " + isbnModificar + ":");
-        gestorLibros.updateTitulo(isbnModificar, nuevoTitulo);
-        System.out.println("");
+            switch (opcion) {
+                case 1:
+                    // Agregar libro
+                    System.out.print("Ingrese ISBN: ");
+                    String isbn = sc.nextLine();
+                    System.out.print("Ingrese título: ");
+                    String titulo = sc.nextLine();
+                    System.out.print("Ingrese autor: ");
+                    String autor = sc.nextLine();
+                    System.out.print("Ingrese año de publicación: ");
+                    int anio = sc.nextInt();
+                    gestorLibros.addLibro(isbn, titulo, autor, anio);
+                    break;
+                case 2:
+                    // Consultar todos los libros
+                    System.out.println("Lista de todos los libros:");
+                    gestorLibros.getLibros();
+                    break;
+                case 3:
+                    // Consultar libros por autor
+                    System.out.print("Ingrese autor: ");
+                    String autorConsulta = sc.nextLine();
+                    gestorLibros.getLibrosByAutor(autorConsulta);
+                    break;
+                case 4:
+                    // Consultar libros por año
+                    System.out.print("Ingrese año de publicación: ");
+                    int anioConsulta = sc.nextInt();
+                    gestorLibros.getLibrosByAnio(anioConsulta);
+                    break;
+                case 5:
+                    // Modificar libro
+                    System.out.print("Ingrese ISBN del libro a modificar: ");
+                    String isbnModificar = sc.nextLine();
+                    System.out.print("Ingrese nuevo título (dejar vacío para no modificar): ");
+                    String nuevoTitulo = sc.nextLine();
+                    System.out.print("Ingrese nuevo autor (dejar vacío para no modificar): ");
+                    String nuevoAutor = sc.nextLine();
+                    System.out.print("Ingrese nuevo año de publicación (0 para no modificar): ");
+                    int nuevoAnio = sc.nextInt();
+                    System.out.println("Inserte cual de las siguientes opciones desea realizar:");
+                    System.out.println("1. Modificar título");
+                    System.out.println("2. Modificar autor");
+                    System.out.println("3. Modificar año de publicación");
 
-        // Verificar modificación
-        System.out.println("Verificando modificación:");
-        gestorLibros.getLibrosByAutor("George Orwell");
-        System.out.println("");
+                    System.out.print("Opción: ");
+                    int subOpcion = sc.nextInt();
 
-        // Modificar autor/a libro
-        String isbnModificarAutor = "978-0-14-044913-6";
-        String nuevoAutor = "Lev Tolstói";
-        System.out.println("Modificando autor del libro con ISBN " + isbnModificarAutor + ":");
-        gestorLibros.updateAutor(isbnModificarAutor, nuevoAutor);
-        System.out.println("");
+                    while (subOpcion < 1 || subOpcion > 3) {
+                        System.out.println("Opción no válida. Por favor, seleccione una opción del 1 al 3:");
+                        System.out.print("Opción: ");
+                        subOpcion = sc.nextInt();
+                    }
 
-        // Verificar modificación
-        System.out.println("Verificando modificación:");
-        gestorLibros.getLibrosByAutor(nuevoAutor);
-        System.out.println("");
+                    switch (subOpcion) {
+                        case 1:
+                            gestorLibros.updateTitulo(isbnModificar, nuevoTitulo);
+                            break;
+                        case 2:
+                            gestorLibros.updateAutor(isbnModificar, nuevoAutor);
+                            break;
+                        case 3:
+                            gestorLibros.updateAnioPublicacion(isbnModificar, nuevoAnio);
+                            break;
+                    }
+                    break;
+                case 6:
+                    // Eliminar libro
+                    System.out.print("Ingrese ISBN del libro a eliminar: ");
+                    String isbnEliminar = sc.nextLine();
+                    gestorLibros.deleteLibro(isbnEliminar);
+                    break;
+                case 7:
+                    System.out.println("Estás seguro? Se eliminarán todos los libros de la base de datos.");
+                    System.out.print("(Si/No): ");
 
-        // Modificar año de publicación
-        String isbnModificarAnio = "978-3-16-148410-0";
-        int nuevoAnio = 1615;
-        System.out.println("Modificando año de publicación del libro con ISBN " + isbnModificarAnio + ":");
-        gestorLibros.updateAnioPublicacion(isbnModificarAnio, nuevoAnio);
-        System.out.println("");
+                    String subrespuesta = sc.nextLine().toUpperCase();
 
-        // Verificar modificación
-        System.out.println("Verificando modificación:");
-        gestorLibros.getLibrosByAnio(1600);
-        System.out.println("");
+                    while (!subrespuesta.equals("SI") && !subrespuesta.equals("NO")) {
+                        System.out.println("La respuesta es incorrecta. Vuelva a intentarlo.");
+                        System.out.print("(Si/No): ");
+                        subrespuesta = sc.nextLine().toUpperCase();
+                    }
 
-        // Eliminar un libro
-        String isbnEliminar = "978-3-16-148410-0";
-        System.out.println("Eliminando libro con ISBN " + isbnEliminar + ":");
-        gestorLibros.deleteLibro(isbnEliminar);
-        System.out.println("");
-
-        // Verificar eliminación
-        System.out.println("Verificando eliminación:");
-        gestorLibros.getLibros();
-        System.out.println("");
-
-        // Eliminar libros anteriores a un año específico
-        int anioEliminar = 1950;
-        System.out.println("Eliminando libros anteriores al año " + anioEliminar + ":");
-        gestorLibros.deleteLibrosByAnio(anioEliminar);
-        System.out.println("");
-
-        // Verificar eliminación
-        System.out.println("Verificando eliminación:");
-        gestorLibros.getLibros();
-        System.out.println("");
-
-        // Limpiar todos los libros
-        System.out.println("Limpiando todos los libros:");
-        gestorLibros.cleanLibros();
-        System.out.println("");
-
-        // Select para verificar
-        System.out.println("Verificando que no queden libros:");
-        gestorLibros.getLibros();
-        System.out.println("");
-        
+                    if (subrespuesta.equals("SI")) {
+                        gestorLibros.cleanLibros();
+                        System.out.println("Borrando todos los libros..");
+                    } else {
+                        System.out.println("Se ha cancelado el proceso de borrado.");
+                    }
+                    break;
+                case 8:
+                    System.out.println("Accediendo al Gestor de Base de Datos");
+                    System.out.println("");
+                    gestorVisualBD();
+                    break;
+                case 9:
+                    System.out.println("Saliendo de la aplicación..");
+                    System.out.println("Adios :)");
+                    salir = true;
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        }
         sc.close();
     }
 }

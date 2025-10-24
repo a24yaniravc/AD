@@ -14,10 +14,11 @@ public class GestorBiblioteca {
         this.createAnyways = createAnyways;
     }
 
+    // Crear o Reemplazar BD
     public void create(String DB) {
         MySQLConnection mysqlConnection = new MySQLConnection();
         try (Connection connection = mysqlConnection.getConnection();
-            Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement()) {
 
             if (createAnyways) {
                 statement.executeUpdate("DROP DATABASE IF EXISTS " + DB);
@@ -28,6 +29,18 @@ public class GestorBiblioteca {
             } else {
                 statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + DB);
             }
+        } catch (SQLException e) {
+            System.err.println("ERROR creando la BD: " + e.getMessage());
+        }
+    }
+
+    // Destruir BD
+    public void destroy(String DB) {
+        MySQLConnection mysqlConnection = new MySQLConnection();
+        try (Connection connection = mysqlConnection.getConnection();
+                Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DROP DATABASE IF EXISTS " + DB);
+
         } catch (SQLException e) {
             System.err.println("ERROR creando la BD: " + e.getMessage());
         }

@@ -2,6 +2,8 @@ package com.principales;
 
 import java.sql.Statement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class GestorLibros {
@@ -64,9 +66,9 @@ public class GestorLibros {
     // Obtener libro de un autor/a específico
     public void getLibrosByAutor(String autor) {
         String sqlSelect = "SELECT * FROM libros WHERE autor = ?";
-        try (var statement = conn.prepareStatement(sqlSelect)) {
+        try (PreparedStatement statement = conn.prepareStatement(sqlSelect)) {
             statement.setString(1, autor);
-            try (var rs = statement.executeQuery()) {
+            try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     System.out.println("ISBN: " + rs.getString("ISBN") +
                                        ", Titulo: " + rs.getString("titulo") +
@@ -82,9 +84,9 @@ public class GestorLibros {
     // Obtener libros posteriores a un año específico
     public void getLibrosByAnio(int anioPublicacion) {
         String sqlSelect = "SELECT * FROM libros WHERE anio_publicacion > ?";
-        try (var statement = conn.prepareStatement(sqlSelect)) {
+        try (PreparedStatement statement = conn.prepareStatement(sqlSelect)) {
             statement.setInt(1, anioPublicacion);
-            try (var rs = statement.executeQuery()) {
+            try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     System.out.println("ISBN: " + rs.getString("ISBN") +
                                         ", Titulo: " + rs.getString("titulo") +
@@ -101,8 +103,8 @@ public class GestorLibros {
     // Modificar titulo
     public void updateTitulo(String isbn, String nuevoTitulo) {
         String sqlUpdate = "UPDATE libros SET titulo = ? WHERE ISBN = ?";
-        
-        try (var statement = conn.prepareStatement(sqlUpdate)) {
+
+        try (PreparedStatement statement = conn.prepareStatement(sqlUpdate)) {
             statement.setString(1, nuevoTitulo);
             statement.setString(2, isbn);
             int rowsAffected = statement.executeUpdate();
@@ -119,8 +121,8 @@ public class GestorLibros {
     // Modificar autor/a
     public void updateAutor(String isbn, String nuevoAutor) {
         String sqlUpdate = "UPDATE libros SET autor = ? WHERE ISBN = ?";
-        
-        try (var statement = conn.prepareStatement(sqlUpdate)) {
+
+        try (PreparedStatement statement = conn.prepareStatement(sqlUpdate)) {
             statement.setString(1, nuevoAutor);
             statement.setString(2, isbn);
             int rowsAffected = statement.executeUpdate();
@@ -137,7 +139,7 @@ public class GestorLibros {
     // Modificar año de publicación
     public void updateAnioPublicacion(String isbn, int nuevoAnio) {
         String sqlUpdate = "UPDATE libros SET anio_publicacion = ? WHERE ISBN = ?";
-        try (var statement = conn.prepareStatement(sqlUpdate)) {
+        try (PreparedStatement statement = conn.prepareStatement(sqlUpdate)) {
             statement.setInt(1, nuevoAnio);
             statement.setString(2, isbn);
             int rowsAffected = statement.executeUpdate();
@@ -154,7 +156,7 @@ public class GestorLibros {
     // Eliminar un libro
     public void deleteLibro(String isbn) {
         String sqlDelete = "DELETE FROM libros WHERE ISBN = ?";
-        try (var statement = conn.prepareStatement(sqlDelete)) {
+        try (PreparedStatement statement = conn.prepareStatement(sqlDelete)) {
             statement.setString(1, isbn);
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
@@ -170,7 +172,7 @@ public class GestorLibros {
     // Eliminar libros anteriores a un año específico
     public void deleteLibrosByAnio(int anioPublicacion) {
         String sqlDelete = "DELETE FROM libros WHERE anio_publicacion < ?";
-        try (var statement = conn.prepareStatement(sqlDelete)) {
+        try (PreparedStatement statement = conn.prepareStatement(sqlDelete)) {
             statement.setInt(1, anioPublicacion);
             int rowsAffected = statement.executeUpdate();
             System.out.println(rowsAffected + " libros eliminados que eran anteriores al año " + anioPublicacion + ".");
@@ -182,7 +184,7 @@ public class GestorLibros {
     // CleanLibros
     public void cleanLibros(){
         String sqlDeleteAll = "DELETE FROM libros";
-        try (var statement = conn.createStatement()) {
+        try (Statement statement = conn.createStatement()) {
             int rowsAffected = statement.executeUpdate(sqlDeleteAll);
             System.out.println("Se han eliminado " + rowsAffected + " libros de la base de datos.");
         } catch (SQLException e) {

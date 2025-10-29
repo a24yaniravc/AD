@@ -49,15 +49,19 @@ public class Principal {
                     break;
                 case "2":
                     // Consultar información de un Cliente
+                    gestorClientes.consultarInfoCliente(connDB);
                     break;
                 case "3":
                     // Consultar pedidos realizados por un cliente
+                    gestorPedidos.consultarPedidosCliente(connDB);
                     break;
                 case "4":
                     // Realizar un pedido
+                    gestorPedidos.realizarPedido(connDB);
                     break;
                 case "5":
                     // Exportar pedido a un JSON
+                    gestorPedidos.exportarPedidoJSON(connDB);
                     break;
                 case "6":
                     // Salir
@@ -125,10 +129,11 @@ public class Principal {
                     break;
                 case "2":
                     // Gestionar clientes
-                    
+                    gestorClientes.gestionarClientes(connDB);
                     break;
                 case "3":
                     // Gestionar productos
+                    gestorProductos.gestionarProductos(connDB);
                     break;
                 case "4":
                     // Volver al menú principal

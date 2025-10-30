@@ -28,9 +28,30 @@ public class Principal {
     private static Connection connDB;
 
     public static void main(String[] args) {
+        // Inicio del programa
+
+        try {
+            connDB = DriverManager.getConnection("jdbc:mysql://localhost:3306/"
+                    + DB_NAME,
+                    DB_USER,
+                    DB_PASSWORD);
+
+            gestorPedidos = new GestorPedidos();
+            gestorClientes = new GestorClientes();
+            gestorProductos = new GestorProductos();
+
+            System.out.println("Conexión exitosa a la base de datos '" + DB_NAME + "'.");
+        } catch (SQLException e) {
+            System.err.println(
+                    "ERROR conectando a la BD. La base de datos no existe o las credenciales son incorrectas.");
+            System.err.println("Mensaje de error: " + e.getMessage());
+        }
+
         String opcion = "";
 
+        // Menú principal
         while (!opcion.equals("6")) {
+            System.out.println("");
             System.out.println("==== Menú ====");
             System.out.println("1. Mantenimiento de Bolechas");
             System.out.println("2. Consultar información de un Cliente");

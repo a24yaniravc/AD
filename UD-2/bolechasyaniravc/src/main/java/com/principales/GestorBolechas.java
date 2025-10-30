@@ -33,7 +33,7 @@ public class GestorBolechas {
             // Tabla pedido con fk de cliente
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS pedido (id int NOT NULL," +
                     "fecha datetime NOT NULL," + "idProducto int NOT NULL," +
-                    "idCliente NOT NULL char(9)," + "PRIMARY KEY (id)," +
+                    "idCliente char(9)," + "PRIMARY KEY (id)," +
                     "CONSTRAINT fk_pedido_cliente FOREIGN KEY (idCliente) REFERENCES cliente(dni) " +
                     "on update cascade on delete set null)");
             System.out.println("> Tabla 'pedido' creada");

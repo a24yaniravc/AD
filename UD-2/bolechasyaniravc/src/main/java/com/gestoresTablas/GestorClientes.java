@@ -13,6 +13,7 @@ public class GestorClientes {
         String opcion = "";
 
         while (!opcion.equals("4")) {
+            System.out.println("");
             System.out.println("==== Gestor de Clientes ====");
             System.out.println("1. Añadir cliente");
             System.out.println("2. Eliminar cliente");

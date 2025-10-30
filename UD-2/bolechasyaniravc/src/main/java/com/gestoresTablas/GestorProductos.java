@@ -137,7 +137,7 @@ public class GestorProductos {
             System.out.println("2. Descripción");
             System.out.println("3. Cantidad");
             System.out.println("4. Precio");
-            System.out.println("5. idPedido");
+            System.out.println("5. Id del Pedido");
             System.out.println("6. Salir");
             System.out.print("Opción: ");
             opcion = scanner.nextLine();

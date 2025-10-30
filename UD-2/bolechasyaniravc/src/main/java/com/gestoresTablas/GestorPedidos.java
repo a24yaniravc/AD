@@ -1,10 +1,17 @@
 package com.gestoresTablas;
 
 import java.sql.Statement;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class GestorPedidos {
     private Scanner sc = new Scanner(System.in);
@@ -14,18 +21,18 @@ public class GestorPedidos {
         System.out.println("Realizar un nuevo pedido.");
         System.out.println("");
 
-        System.out.println("Introduzca el DNI del cliente: ");
+        System.out.print("Introduzca el DNI del cliente: ");
         String idCliente = sc.nextLine();
 
-        System.out.println("Introduzca el ID del producto: ");
+        System.out.print("Introduzca el ID del producto: ");
         String idProducto = sc.nextLine();
 
-        System.out.println("Introduzca la cantidad del producto: ");
+        System.out.print("Introduzca la cantidad del producto: ");
         String cantidad = sc.nextLine();
 
         try {
             Statement statement = connDB.createStatement();
-            String insertPEDIDO = "INSERT INTO Pedidos (fecha, idProducto, idCliente) VALUES (NOW(), '"
+            String insertPEDIDO = "INSERT INTO pedido (fecha, idProducto, idCliente) VALUES (NOW(), '"
                     + idProducto + "', '" + idCliente + "')";
 
             // Ejecutar la inserción y obtener el ID generado
@@ -36,7 +43,7 @@ public class GestorPedidos {
                 idPedido = generatedKeys.getInt(1);
             }
 
-            String insertProducto = "UPDATE Producto SET cantidad = cantidad - " + cantidad + ", idPedido = "
+            String insertProducto = "UPDATE producto SET cantidad = cantidad - " + cantidad + ", idPedido = "
                     + idPedido + " WHERE id = '" + idProducto + "'";
             statement.executeUpdate(insertProducto);
 
@@ -45,7 +52,6 @@ public class GestorPedidos {
             System.out.println("Error al realizar el pedido: " + e.getMessage());
         }
     }
-
 
     // Consultar los pedidos realizados por un cliente
     public void consultarPedidosCliente(Connection connDB) {
@@ -56,21 +62,25 @@ public class GestorPedidos {
         String idCliente = sc.nextLine();
 
         try {
-            Statement statement = connDB.createStatement();
-            String queryPEDIDO = "SELECT * FROM Pedidos WHERE idCliente = '" + idCliente + "'";
-            ResultSet resultSetPEDIDO = statement.executeQuery(queryPEDIDO);
+            Statement ps = connDB.createStatement();
+            String query = "SELECT p.id AS pedidoId, p.fecha, pr.cantidad AS cantidad, pr.precio " +
+                    "FROM pedido p JOIN producto pr ON p.idProducto = pr.id " +
+                    "WHERE p.idCliente = '" + idCliente + "'";
+            ResultSet resultSet = ps.executeQuery(query);
 
-            String queryProducto = "SELECT precio FROM Producto WHERE idPedido IN (SELECT id FROM Pedidos WHERE idCliente = '"
-                    + idCliente + "')";
-            ResultSet resultSetProducto = statement.executeQuery(queryProducto);
             System.out.println("Pedidos realizados por el cliente con ID " + idCliente + ":");
-            while (resultSetPEDIDO.next()) {
-                String idPedido = resultSetPEDIDO.getString("idPedido");
-                String fecha = resultSetPEDIDO.getString("fecha");
-                String total = resultSetPEDIDO.getString("cantidad");
-                total = Integer.parseInt(total) * resultSetProducto.getFloat("precio") + "€";
+
+            while (resultSet.next()) {
+                String idPedido = resultSet.getString("pedidoId");
+                String fecha = resultSet.getString("fecha");
+                int cantidadProducto = resultSet.getInt("cantidad");
+                float precio = resultSet.getFloat("precio");
+                String total = (cantidadProducto * precio) + "€";
                 System.out.println("ID Pedido: " + idPedido + ", Fecha: " + fecha + ", Total: " + total);
             }
+
+            resultSet.close();
+            ps.close();
         } catch (SQLException e) {
             System.out.println("Error al consultar los pedidos del cliente: " + e.getMessage());
         }
@@ -84,29 +94,50 @@ public class GestorPedidos {
         System.out.print("Introduzca el ID del pedido a exportar: ");
         String idPedido = sc.nextLine();
 
+        // Si no existe, crear carpeta "pedidos_json"
+        File carpeta = new File("pedidos_json");
+        if (!carpeta.exists()) {
+            carpeta.mkdir();
+        }
+
         try {
+            // Consulta para obtener los datos del pedido
             Statement statement = connDB.createStatement();
-            String query = "SELECT p.id, p.fecha, p.idProducto, p.idCliente, pr.nombre, pr.descripción, pr.cantidad, pr.precio "
-                    + "FROM Pedidos p JOIN Producto pr ON p.idProducto = pr.id "
+            String query = "SELECT p.id, p.fecha, p.idProducto, p.idCliente, pr.nombre, pr.descripcion, pr.cantidad, pr.precio "
+                    + "FROM pedido p JOIN producto pr ON p.idProducto = pr.id "
                     + "WHERE p.id = '" + idPedido + "'";
             ResultSet resultSet = statement.executeQuery(query);
 
+            // Recoger datos del pedido
             if (resultSet.next()) {
-                String json = "{\n" +
-                        "  \"idPedido\": \"" + resultSet.getString("id") + "\",\n" +
-                        "  \"fecha\": \"" + resultSet.getString("fecha") + "\",\n" +
-                        "  \"clienteID\": \"" + resultSet.getString("idCliente") + "\",\n" +
-                        "  \"producto\": {\n" +
-                        "    \"idProducto\": \"" + resultSet.getString("idProducto") + "\",\n" +
-                        "    \"nombre\": \"" + resultSet.getString("nombre") + "\",\n" +
-                        "    \"descripción\": \"" + resultSet.getString("descripción") + "\",\n" +
-                        "    \"cantidad\": \"" + resultSet.getString("cantidad") + "\",\n" +
-                        "    \"precio\": \"" + resultSet.getString("precio") + "\"\n" +
-                        "  }\n" +
-                        "}";
+                // Construir un objeto Map para que Gson lo serialice correctamente
+                Map<String, Object> pedido = new HashMap<>();
+                pedido.put("idPedido", resultSet.getInt("id"));
+                pedido.put("fecha", resultSet.getString("fecha"));
+                pedido.put("clienteID", resultSet.getString("idCliente"));
 
-                System.out.println("Pedido exportado a JSON:");
-                System.out.println(json);
+                Map<String, Object> producto = new HashMap<>();
+                producto.put("idProducto", resultSet.getString("idProducto"));
+                producto.put("nombre", resultSet.getString("nombre"));
+                producto.put("descripcion", resultSet.getString("descripcion"));
+                producto.put("cantidad", resultSet.getInt("cantidad"));
+                producto.put("precio", resultSet.getFloat("precio"));
+
+                pedido.put("producto", producto);
+
+                // Creamos el JSON
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.setPrettyPrinting();
+                Gson gson = gsonBuilder.create();
+
+                // Escribir el JSON en un archivo
+                try (FileWriter writer = new FileWriter("pedidos_json/pedido_" 
+                        + idPedido + ".json")) {
+                    gson.toJson(pedido, writer);
+                    System.out.println("Archivo JSON creado: pedido_" + idPedido + ".json");
+                } catch (IOException e) {
+                    System.out.println("Error al crear el archivo JSON: " + e.getMessage());
+                }
             } else {
                 System.out.println("No se encontró ningún pedido con el ID proporcionado.");
             }

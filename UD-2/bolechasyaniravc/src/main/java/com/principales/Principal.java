@@ -104,6 +104,7 @@ public class Principal {
         // Crear BD
         String subOpcion = "";
 
+        // Menú de mantenimiento
         while (!subOpcion.equals("4")) {
             System.out.println("");
             System.out.println("==== Mantenimiento ====");

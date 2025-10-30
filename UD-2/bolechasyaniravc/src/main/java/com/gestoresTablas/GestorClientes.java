@@ -2,6 +2,7 @@ package com.gestoresTablas;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
@@ -12,13 +13,14 @@ public class GestorClientes {
     public void gestionarClientes(Connection connDB) {
         String opcion = "";
 
-        while (!opcion.equals("4")) {
+        while (!opcion.equals("5")) {
             System.out.println("");
             System.out.println("==== Gestor de Clientes ====");
             System.out.println("1. Añadir cliente");
             System.out.println("2. Eliminar cliente");
             System.out.println("3. Modificar cliente");
-            System.out.println("4. Volver al menú principal");
+            System.out.println("4. Mostrar todos los clientes");
+            System.out.println("5. Volver al menú de mantenimiento");
 
             System.out.print("Opción: ");
             opcion = scanner.nextLine();
@@ -37,10 +39,14 @@ public class GestorClientes {
                     modificarCliente(connDB);
                     break;
                 case "4":
+                    mostrarClientes(connDB);
+                    break;
+                case "5":
                     // Volver al menú principal
                     System.out.println("Volviendo al menú principal...");
                     break;
                 default:
+                    System.out.println("Opción no válida.");
                     break;
             }
         }
@@ -56,21 +62,11 @@ public class GestorClientes {
         String dni = scanner.nextLine();
         System.out.print("Nombre: ");
         String nombre = scanner.nextLine();
-        System.out.print("Insertar pedido (SI/NO): ");
-        String insertarPedido = scanner.nextLine();
-
-        // Si la respuesta es no, el idPedido será null
-        String idPedido = "null";
-        if (insertarPedido.equalsIgnoreCase("SI")) {
-            System.out.print("ID Pedido: ");
-            idPedido = scanner.nextLine();
-        }
 
         System.out.println("Creando cliente en la base de datos...");
 
         try (Statement statement = connDB.createStatement()) {
-            String sql = "INSERT INTO cliente (dni, nombre, idPedido) VALUES ('" + dni + "', '" + nombre + "', "
-                    + idPedido + ")";
+            String sql = "INSERT INTO cliente (dni, nombre) VALUES ('" + dni + "', '" + nombre + "')";
             statement.executeUpdate(sql);
             System.out.println("Cliente añadido correctamente.");
         } catch (Exception e) {
@@ -107,10 +103,11 @@ public class GestorClientes {
 
         // Menú de modificación
         while (!opcion.equals("3")) {
+            System.out.println("");
             System.out.println("¿Que desea modificar?");
-            System.out.print("1. Nombre");
-            System.out.print("2. idPedido");
-            System.out.print("3. Salir");
+            System.out.println("1. Nombre");
+            System.out.println("2. idPedido");
+            System.out.println("3. Salir");
             System.out.print("Opción: ");
             opcion = scanner.nextLine();
 
@@ -167,17 +164,36 @@ public class GestorClientes {
 
             if (resultSet.next()) {
                 String nombre = resultSet.getString("nombre");
-                String idPedido = resultSet.getString("idPedido");
 
                 System.out.println("Información del Cliente:");
                 System.out.println("DNI: " + dni);
                 System.out.println("Nombre: " + nombre);
-                System.out.println("ID Pedido: " + idPedido);
             } else {
                 System.out.println("No se encontró ningún cliente con el DNI proporcionado.");
             }
         } catch (Exception e) {
             System.err.println("ERROR consultando el cliente: " + e.getMessage());
+        }
+    }
+
+    private void mostrarClientes(Connection connDB) {
+        System.out.println("Consultar información de todos los Clientes");
+        System.out.println("");
+        System.out.println("Clientes presentes en la BD:");
+        
+        try (Statement stmt = connDB.createStatement()){
+            String sql = "SELECT * FROM cliente";
+
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while(resultSet.next()) {
+                String dni = resultSet.getString("dni");
+                String nombre = resultSet.getString("nombre");
+                System.out.println("DNI: " + dni + ", Nombre: " + nombre);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la lectura de los Clientes: " + e.getMessage());
         }
     }
 }

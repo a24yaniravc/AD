@@ -2,6 +2,8 @@ package com.gestoresTablas;
 
 import java.sql.Statement;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class GestorProductos {
@@ -11,12 +13,14 @@ public class GestorProductos {
     public void gestionarProductos(Connection connDB) {
         String opcion = "";
 
-        while (!opcion.equals("4")) {
+        while (!opcion.equals("5")) {
+            System.out.println("");
             System.out.println("==== Gestor de Productos ====");
             System.out.println("1. Añadir producto");
             System.out.println("2. Eliminar producto");
             System.out.println("3. Modificar producto");
-            System.out.println("4. Salir");
+            System.out.println("4. Mostrar todos los productos");
+            System.out.println("5. Volver al menú de mantenimiento");
 
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextLine();
@@ -35,6 +39,9 @@ public class GestorProductos {
                     modificarProducto(connDB);
                     break;
                 case "4":
+                    mostrarProductos(connDB);
+                    break;
+                case "5":
                     System.out.println("Saliendo del gestor de productos...");
                     break;
                 default:
@@ -78,7 +85,7 @@ public class GestorProductos {
 
         // Insertar el producto en la base de datos
         try (Statement statement = connDB.createStatement()) {
-            String sql = "INSERT INTO producto (id, nombre, descripción, cantidad, precio, idPedido) VALUES ("
+            String sql = "INSERT INTO producto (id, nombre, descripcion, cantidad, precio, idPedido) VALUES ("
                     + id + ", '"
                     + nombre + "', "
                     + (descripcion.equals("NULL") ? "NULL" : "'" + descripcion + "'") + ", "
@@ -154,7 +161,7 @@ public class GestorProductos {
                     System.out.print("Nueva descripción: ");
                     String nuevaDescripcion = scanner.nextLine();
                     try (Statement statement = connDB.createStatement()) {
-                        String sql = "UPDATE producto SET descripción = '" + nuevaDescripcion + "' WHERE id = " + id;
+                        String sql = "UPDATE producto SET descripcion = '" + nuevaDescripcion + "' WHERE id = " + id;
                         statement.executeUpdate(sql);
                         System.out.println("Producto modificado correctamente.");
                     } catch (Exception e) {
@@ -205,6 +212,33 @@ public class GestorProductos {
                     System.out.println("Opción no válida. Intente de nuevo.");
                     break;
             }
+        }
+    }
+
+    private void mostrarProductos(Connection connDB) {
+        System.out.println("Consultar información de todos los Productos");
+        System.out.println("");
+        System.out.println("Productos presentes en la BD:");
+        
+        try (Statement stmt = connDB.createStatement()){
+            String sql = "SELECT * FROM producto";
+
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while(resultSet.next()) {
+                String id = resultSet.getString("id");
+                String nombre = resultSet.getString("nombre");
+                String descripcion = resultSet.getString("descripcion");
+                String cantidad = resultSet.getString("cantidad");
+                String precio = resultSet.getString("precio");
+                String idPedido = resultSet.getString("idPedido");
+                System.out.println("ID Producto: " + id + ", Nombre: " + nombre + 
+                        ", Descripción: " + descripcion + ", Cantidad: " + cantidad +
+                        ", Precio: " + precio +  "ID Pedido: " + idPedido);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en la lectura de los Productos: " + e.getMessage());
         }
     }
 }

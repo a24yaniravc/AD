@@ -3,16 +3,25 @@ package com.principales;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 
 import com.conexiones.MySQLConnection;
 
 public class GestorBolechas {
+    private Scanner scanner = new Scanner(System.in);
+
     // Crear BD
     public void create(String DB) {
         MySQLConnection mysqlConnection = new MySQLConnection();
         try (Connection connectionServer = mysqlConnection.getConnection();
                 Statement statement = connectionServer.createStatement()) {
-            statement.executeUpdate("DROP DATABASE IF EXISTS " + DB);
+
+            System.out.println("Desea eliminar la base de datos si ya existe? (s/n)");
+            String respuesta = scanner.nextLine();
+
+            if (respuesta.equalsIgnoreCase("s")) {
+                statement.executeUpdate("DROP DATABASE IF EXISTS " + DB);
+            }
             statement.executeUpdate("CREATE DATABASE " + DB);
 
             System.out.println("La base de datos '" + DB + "' ha sido creada correctamente.");

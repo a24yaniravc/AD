@@ -10,19 +10,19 @@ import com.gestoresTablas.GestorProductos;
 import com.gestoresTablas.GestorClientes;
 
 public class Principal {
-    // Cambiar datos según BD y usuario
-    public static String DB_NAME = "bolechasYaniraVC";
-    public static String DB_USER = "root";
-    public static String DB_PASSWORD = "root";
+    // Cambiar datos según BD y usuario(CORRECCION: no poner los datos aquí)
+    private static String DB_NAME = "bolechasYaniraVC";
+    private static String DB_USER = "root";
+    private static String DB_PASSWORD = "root";
 
     // Variables globales
-    public static Scanner scanner = new Scanner(System.in);
-    public static GestorBolechas gestor = new GestorBolechas();;
+    private static Scanner scanner = new Scanner(System.in);
+    private static GestorBolechas gestor = new GestorBolechas();;
 
     // Gestores de tablas
-    public static GestorPedidos gestorPedidos;
-    public static GestorClientes gestorClientes;
-    public static GestorProductos gestorProductos;
+    private static GestorPedidos gestorPedidos;
+    private static GestorClientes gestorClientes;
+    private static GestorProductos gestorProductos;
 
     // Conexión a la BD
     private static Connection connDB;

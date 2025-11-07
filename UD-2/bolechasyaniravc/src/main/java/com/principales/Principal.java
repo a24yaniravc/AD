@@ -24,7 +24,7 @@ public class Principal {
     private static GestorClientes gestorClientes;
     private static GestorProductos gestorProductos;
 
-    // Prueba1
+    // Prueba
 
     // Conexión a la BD
     private static Connection connDB;

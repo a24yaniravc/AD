@@ -24,7 +24,9 @@ public class Principal {
     private static GestorClientes gestorClientes;
     private static GestorProductos gestorProductos;
 
-    // Prueba
+    // Connection URL
+    // private static String URL = "jdbc:mysql://localhost:3306/";
+    private static String URL = "jdbc:mariadb://localhost:3307/";
 
     // Conexión a la BD
     private static Connection connDB;
@@ -33,20 +35,16 @@ public class Principal {
         // Inicio del programa
 
         try {
-            connDB = DriverManager.getConnection("jdbc:mysql://localhost:3306/"
-                    + DB_NAME,
-                    DB_USER,
-                    DB_PASSWORD);
+            connDB = connectionABD();
 
             gestorPedidos = new GestorPedidos();
             gestorClientes = new GestorClientes();
             gestorProductos = new GestorProductos();
 
             System.out.println("Conexión exitosa a la base de datos '" + DB_NAME + "'.");
-        } catch (SQLException e) {
-            System.err.println(
-                    "ERROR conectando a la BD. La base de datos no existe o las credenciales son incorrectas.");
-            System.err.println("Mensaje de error: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR conectando a la BD: " + e.getMessage());
+            return;
         }
 
         String opcion = "";
@@ -127,12 +125,9 @@ public class Principal {
                     System.out.println("> Conectandose a la base de datos...");
 
                     try {
-                        connDB = DriverManager.getConnection("jdbc:mysql://localhost:3306/"
-                                + DB_NAME,
-                                DB_USER,
-                                DB_PASSWORD);
+                        connDB = connectionABD();
                         System.out.println("Conexión exitosa a la base de datos '" + DB_NAME + "'.");
-                    } catch (SQLException e) {
+                    } catch (Exception e) {
                         System.err.println("ERROR conectando a la BD: " + e.getMessage());
                     }
 
@@ -171,5 +166,17 @@ public class Principal {
                     break;
             }
         }
+    }
+
+    private static Connection connectionABD() {
+        try {
+            return DriverManager.getConnection(URL
+                    + DB_NAME,
+                    DB_USER,
+                    DB_PASSWORD);
+        } catch (SQLException e) {
+            System.err.println("ERROR conectando a la BD: " + e.getMessage());
+        }
+        return null;
     }
 }

@@ -5,15 +5,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-import com.conexiones.MySQLConnection;
+import com.conexiones.MariaDBConnection;
+// import com.conexiones.MySQLConnection;
 
 public class GestorBolechas {
     private Scanner scanner = new Scanner(System.in);
 
     // Crear BD
     public void create(String DB) {
-        MySQLConnection mysqlConnection = new MySQLConnection();
-        try (Connection connectionServer = mysqlConnection.getConnection();
+        MariaDBConnection MariaDBConnection = new MariaDBConnection();
+        try (Connection connectionServer = MariaDBConnection.getConnection();
                 Statement statement = connectionServer.createStatement()) {
 
             System.out.println("Desea eliminar la base de datos si ya existe? (s/n)");

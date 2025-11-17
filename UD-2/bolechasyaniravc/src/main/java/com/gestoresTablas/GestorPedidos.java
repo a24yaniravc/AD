@@ -138,6 +138,8 @@ public class GestorPedidos {
                 } catch (IOException e) {
                     System.out.println("Error al crear el archivo JSON: " + e.getMessage());
                 }
+
+                statement.close();
             } else {
                 System.out.println("No se encontró ningún pedido con el ID proporcionado.");
             }

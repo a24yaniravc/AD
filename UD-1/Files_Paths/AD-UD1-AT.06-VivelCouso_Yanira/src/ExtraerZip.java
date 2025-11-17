@@ -31,6 +31,7 @@ public class ExtraerZip {
 
             while ((entrada = zis.getNextEntry()) != null) {
                 System.out.println("Extrayendo: " + entrada.getName());
+                
                 File nuevoFichero = new File(zonaDescomprimir, entrada.getName());
                 new File(nuevoFichero.getParent()).mkdirs();
 
@@ -43,6 +44,7 @@ public class ExtraerZip {
                 }
                 zis.closeEntry();
             }
+
             System.out.println("Descompresión completada en la carpeta: " +
                     zonaDescomprimir);
 

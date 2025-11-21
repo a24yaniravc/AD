@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  oracle-std-service:
+    image: container-registry.oracle.com/database/express:latest
+    container_name: oracle_clemente
+    ports:
+      - '1521:1521'
+    environment:
+      - ORACLE_PWD=abc123
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    ports:
+      - "8080:8978"
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/workspace
+
+  oracle-init:
+    image: container-registry.oracle.com/database/express:latest
+    depends_on:
+      - oracle-std-service
+    entrypoint: ["/bin/bash", "-c"]
+    command: >
+      "
+      sleep 60;
+      echo exit | sqlplus sys/abc123 as sysdba <<EOF
+      ALTER PLUGGABLE DATABASE XEPDB1 OPEN;
+      ALTER PLUGGABLE DATABASE XEPDB1 SAVE STATE;
+      ALTER SESSION SET CONTAINER = XEPDB1;
+      CREATE USER BIBLIOCLEMENTE IDENTIFIED BY "abc123.";
+      GRANT CONNECT, RESOURCE TO BIBLIOCLEMENTE;
+      exit;
+      EOF
+      "
+    networks:
+      - default
+
+
+volumes:
+  oracle_data:
+  cloudbeaver_data:

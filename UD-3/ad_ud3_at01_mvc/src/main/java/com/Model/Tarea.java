@@ -2,13 +2,20 @@ package com.Model;
 
 import java.util.List;
 
+/**
+ * Modelo que representa una tarea.
+ */
 public class Tarea {
     private int id; // Autoincrimentable
     private String titulo;
     private String descripcion;
     private boolean completada;
 
-    // Constructor
+    /**
+     * Constructor de la clase Tarea.
+     * @param titulo
+     * @param descripcion
+     */
     public Tarea(String titulo, String descripcion) {
         List<Tarea> tareas = RepositorioTareas.obtenerTodas(); 
         
@@ -30,7 +37,10 @@ public class Tarea {
 
     // Getters y Setters
 
-    // Getter ID
+    /**
+     * Getter ID
+     * @return
+     */
     public int getId() {
         return id;
     }
@@ -39,37 +49,55 @@ public class Tarea {
     // por lo que no se proporciona un setter para él
 
 
-    // Getter Titulo
+    /**     * Getter Titulo
+     * @return
+     */
     public String getTitulo() {
         return titulo;
     }
 
-    // Setter Titulo
+    /**
+     * Setter Titulo
+     * @param titulo
+     */
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
 
-    // Getter Descripcion
+    /**     * Getter Descripcion
+     * @return
+     */
     public String getDescripcion() {
         return descripcion;
     }
 
-    // Setter Descripcion
+    /**
+     * Setter Descripcion
+     * @param descripcion
+     */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    // Getter Completada
+    /** 
+     * Getter Completada
+     * @return
+     */
     public boolean isCompletada() {
         return completada;
     }
 
-    // Setter Completada
+    /** 
+     * Setter Completada
+     * @param completada
+     */
     public void setCompletada(boolean completada) {
         this.completada = completada;
     }
 
-    // Método toString para representar la tarea como una cadena
+    /** 
+     * Método toString para representar la tarea como una cadena
+     */
     @Override
     public String toString() {
         return "Tarea [id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", completada=" + completada

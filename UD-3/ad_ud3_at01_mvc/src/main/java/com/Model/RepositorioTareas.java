@@ -2,6 +2,9 @@ package com.Model;
 
 import java.util.List;
 
+/**
+ * Repositorio para gestionar las tareas.
+ */
 public class RepositorioTareas {
     private static RepositorioTareas instancia;
     private List<Tarea> tareas = new java.util.ArrayList<>();

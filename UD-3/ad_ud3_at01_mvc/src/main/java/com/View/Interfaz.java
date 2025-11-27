@@ -18,7 +18,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.Controller.Controller;
-import com.Model.RepositorioTareas;
 import com.Model.Tarea;
 
 /*La vista debe permitir:

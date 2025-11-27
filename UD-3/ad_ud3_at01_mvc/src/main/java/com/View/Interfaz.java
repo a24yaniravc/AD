@@ -30,8 +30,6 @@ public class Interfaz extends JFrame {
     // Controlador
     private Controller controller = new Controller();
 
-    private String info = "";
-
     // Variables
     private JPanel contentPane;
 

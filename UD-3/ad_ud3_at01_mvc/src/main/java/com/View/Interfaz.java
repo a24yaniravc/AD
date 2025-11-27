@@ -34,26 +34,19 @@ public class Interfaz extends JFrame implements ActionListener {
     private JTextField txtID;
     private JTextField txtName;
     private JTextField txtSurname;
-    private JTextField txtAge;
 
     private JButton btnSave;
-    private JButton btnDelete;
-    private JButton btnUpdate;
 
     private JPanel panel;
 
     private JTable table;
-
-    private RepositorioTareas app;
 
     /**
      * Crea el framework de la interfaz gráfica.
      * 
      * @param app
      */
-    public Interfaz(RepositorioTareas app) {
-        this.app = app;
-
+    public Interfaz() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(500, 500, 450, 450);
         contentPane = new JPanel();
@@ -74,22 +67,8 @@ public class Interfaz extends JFrame implements ActionListener {
         contentPane.add(panel);
         panel.setLayout(null);
 
+        // Mostrar menú
         mostrarMenu();
-
-        // Botones
-        /*
-         * btnUpdate = new JButton("Actualizar");
-         * btnUpdate.setFont(new Font("Tahoma", Font.PLAIN, 14));
-         * btnUpdate.setBounds(177, 225, 89, 23);
-         * btnUpdate.addActionListener(this);
-         * panel.add(btnUpdate);
-         * 
-         * btnDelete = new JButton("Mostrar todos");
-         * btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 14));
-         * btnDelete.setBounds(276, 225, 89, 23);
-         * btnDelete.addActionListener(this);
-         * panel.add(btnDelete);
-         */
     }
 
     /**
@@ -294,7 +273,7 @@ public class Interfaz extends JFrame implements ActionListener {
 
         // Tabla
         String[] columnNames = { "ID", "Titulo", "Descripcion", "Completada" };
-        Object[][] data = app.obtenerTodas().stream().map(t -> new Object[] {
+        Object[][] data = RepositorioTareas.obtenerTodas().stream().map(t -> new Object[] {
                 t.getId(),
                 t.getTitulo(),
                 t.getDescripcion(),
@@ -306,8 +285,6 @@ public class Interfaz extends JFrame implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(30, 80, 320, 180);
         panel.add(scrollPane);
-
-
     }
 
     /**
@@ -340,7 +317,7 @@ public class Interfaz extends JFrame implements ActionListener {
         panel.add(btnMenu);
 
         // Etiqueta y campo de texto
-        JLabel lblID = new JLabel("ID de la tarea:");
+        JLabel lblID = new JLabel("ID de la tarea");
         lblID.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblID.setBounds(30, 120, 120, 24);
         panel.add(lblID);
@@ -515,7 +492,7 @@ public class Interfaz extends JFrame implements ActionListener {
 
     public static void main(String[] args) {
         RepositorioTareas app = RepositorioTareas.getInstancia();
-        Interfaz interfaz = new Interfaz(app);
+        Interfaz interfaz = new Interfaz();
         interfaz.setVisible(true);
 
     }

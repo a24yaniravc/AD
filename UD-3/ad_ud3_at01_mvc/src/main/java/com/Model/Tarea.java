@@ -8,9 +8,8 @@ public class Tarea {
     private String descripcion;
     private boolean completada;
 
-
     // Constructor
-    public Tarea(String titulo, String descripcion, boolean completada) {
+    public Tarea(String titulo, String descripcion) {
         List<Tarea> tareas = RepositorioTareas.obtenerTodas(); 
         
         // Asignar ID autoincrementable
@@ -26,7 +25,7 @@ public class Tarea {
         
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.completada = completada;
+        this.completada = false;
     }
 
     // Getters y Setters

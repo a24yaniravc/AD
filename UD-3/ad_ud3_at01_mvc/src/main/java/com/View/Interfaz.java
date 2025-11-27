@@ -1,7 +1,5 @@
 package com.View;
 
-import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -19,7 +17,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.Controller.Controller;
 import com.Model.RepositorioTareas;
+import com.Model.Tarea;
 
 /*La vista debe permitir:
     Mostrar el menú de opciones.
@@ -27,7 +27,12 @@ import com.Model.RepositorioTareas;
     Pedir al usuario los datos para crear o modificar una tarea.
     Mostrar mensajes de error o confirmación */
 
-public class Interfaz extends JFrame implements ActionListener {
+public class Interfaz extends JFrame {
+    // Controlador
+    private Controller controller = new Controller();
+
+    private String info = "";
+
     // Variables
     private JPanel contentPane;
 
@@ -226,7 +231,19 @@ public class Interfaz extends JFrame implements ActionListener {
         btnSave = new JButton("Guardar");
         btnSave.setFont(new Font("Tahoma", Font.PLAIN, 14));
         btnSave.setBounds(30, 180, 320, 30);
-        btnSave.addActionListener(this);
+        btnSave.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                String titulo = txtName.getText();
+                String descripcion = txtSurname.getText();
+
+                if (titulo.isEmpty() || descripcion.isEmpty() || titulo.isBlank() || descripcion.isBlank()) {
+                    mostrarMensaje("Por favor, complete todos los campos.");
+                } else {
+                    controller.agregar(titulo, descripcion);
+                    mostrarMensaje("Tarea '" + titulo + "' creada con éxito.");
+                }
+            }
+        });
         panel.add(btnSave);
 
         JButton btnMenu = new JButton("Menú");
@@ -236,7 +253,6 @@ public class Interfaz extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent ae) {
                 panel.removeAll();
                 mostrarMenu();
-
             }
         });
         panel.add(btnMenu);
@@ -272,8 +288,8 @@ public class Interfaz extends JFrame implements ActionListener {
         panel.add(btnMenu);
 
         // Tabla
-        String[] columnNames = { "ID", "Titulo", "Descripcion", "Completada" };
-        Object[][] data = RepositorioTareas.obtenerTodas().stream().map(t -> new Object[] {
+        String[] columnNames = { "ID", "Título", "Descripción", "Completada" };
+        Object[][] data = controller.listar().stream().map(t -> new Object[] {
                 t.getId(),
                 t.getTitulo(),
                 t.getDescripcion(),
@@ -342,8 +358,15 @@ public class Interfaz extends JFrame implements ActionListener {
                     mostrarMensaje("Por favor, ingrese un ID válido.");
                     return;
                 }
-                // app.marcarCompletada(id);
-                mostrarMensaje("Tarea con ID " + id + " marcada como completada.");
+
+                Tarea t = controller.buscarID(id);
+
+                if (t != null) {
+                    controller.marcarCompletada(id);
+                    mostrarMensaje("Tarea con ID " + id + " marcada como completada.");
+                } else {
+                    mostrarMensaje("Esta tarea no existe.");
+                }
             }
         });
         panel.add(btnMark);
@@ -373,7 +396,6 @@ public class Interfaz extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent ae) {
                 panel.removeAll();
                 mostrarMenu();
-
             }
         });
         panel.add(btnMenu);
@@ -404,8 +426,15 @@ public class Interfaz extends JFrame implements ActionListener {
                     mostrarMensaje("Por favor, ingrese un ID válido.");
                     return;
                 }
-                // app.eliminar(id);
-                mostrarMensaje("Tarea con ID " + id + " eliminada.");
+
+                Tarea t = controller.buscarID(id);
+
+                if (t != null) {
+                    controller.eliminar(id);
+                    mostrarMensaje("Tarea con ID " + id + " eliminada.");
+                } else {
+                    mostrarMensaje("Esta tarea no existe.");
+                }
             }
         });
         panel.add(btnDelete);
@@ -455,7 +484,37 @@ public class Interfaz extends JFrame implements ActionListener {
         // Botón
         JButton btnSearch = new JButton("Buscar tarea");
         btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        btnSearch.setBounds(30, 130, 320, 30);
+        btnSearch.setBounds(30, 120, 320, 30);
+
+        panel.add(btnSearch);
+
+        // Mostrar la tarea encontrada
+        JLabel lblResult = new JLabel("Resultado de la búsqueda");
+        lblResult.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblResult.setBounds(30, 165, 240, 24);
+        panel.add(lblResult);
+
+        JLabel lblTaskID = new JLabel();
+        lblTaskID.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTaskID.setBounds(30, 190, 320, 24);
+        panel.add(lblTaskID);
+
+        JLabel lblTaskNombre = new JLabel();
+        lblTaskNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTaskNombre.setBounds(30, 210, 320, 24);
+        panel.add(lblTaskNombre);
+
+        JLabel lblTaskDescripcion = new JLabel();
+        lblTaskDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTaskDescripcion.setBounds(30, 230, 320, 24);
+        panel.add(lblTaskDescripcion);
+
+        JLabel lblTaskCompletada = new JLabel();
+        lblTaskCompletada.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblTaskCompletada.setBounds(30, 250, 320, 24);
+        panel.add(lblTaskCompletada);
+
+        // Lógica del botón
         btnSearch.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 String idText = txtID.getText();
@@ -466,35 +525,22 @@ public class Interfaz extends JFrame implements ActionListener {
                     mostrarMensaje("Por favor, ingrese un ID válido.");
                     return;
                 }
-                // app.buscarPorID(id);
-                mostrarMensaje("Tarea con ID " + id + " encontrada.");
+                Tarea t = controller.buscarID(id);
+                if (t != null) {
+                    lblTaskID.setText("ID: " + String.valueOf(id));
+                    lblTaskNombre.setText("Título: " + t.getTitulo());
+                    lblTaskDescripcion.setText("Descripción: " + t.getDescripcion());
+                    lblTaskCompletada.setText("Completada: " + (t.isCompletada() ? "Sí" : "No"));
+                    mostrarMensaje("Tarea con ID " + id + " encontrada.");
+                } else {
+                    mostrarMensaje("Esta tarea no existe.");
+                }
             }
         });
-        panel.add(btnSearch);
-
-        // Mostrar la tarea encontrada
-        JLabel lblResult = new JLabel("Resultado de la búsqueda");
-        lblResult.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblResult.setBounds(30, 190, 240, 24);
-        panel.add(lblResult);
-
-        JLabel lblTask = new JLabel("METER AQUI");
-        lblTask.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblTask.setBounds(30, 220, 320, 24);
-        panel.add(lblTask);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
 
     public static void main(String[] args) {
-        RepositorioTareas app = RepositorioTareas.getInstancia();
         Interfaz interfaz = new Interfaz();
         interfaz.setVisible(true);
-
     }
-
 }

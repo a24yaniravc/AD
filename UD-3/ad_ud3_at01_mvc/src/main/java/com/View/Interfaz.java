@@ -18,6 +18,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.Controller.Controller;
+import com.Model.RepositorioTareas;
 import com.Model.Tarea;
 
 /*La vista debe permitir:
@@ -537,6 +538,7 @@ public class Interfaz extends JFrame {
     }
 
     public static void main(String[] args) {
+        RepositorioTareas.getInstancia();
         Interfaz interfaz = new Interfaz();
         interfaz.setVisible(true);
     }

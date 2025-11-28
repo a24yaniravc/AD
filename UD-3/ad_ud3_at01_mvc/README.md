@@ -1,0 +1,3 @@
+# Explicación
+
+La capa Model encapsula tanto las entidades Tarea como la lógica del Repositorio. La capa View se trata de los componentes UI y todo lo visible al usuario final. El controlador solo se dedica a actuar como 'puente' entre la capa Model y View, uniendo el código que ejecuta acciones con la interfaz que utiliza el usuario. El patrón Singleton garantiza una única instancia de Repositorio, asegurando así que los objetos Tarea solo se guarden en la lista dentro de dicha instancia.
